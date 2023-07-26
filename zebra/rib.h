@@ -159,6 +159,8 @@ struct route_entry {
  */
 #define ROUTE_ENTRY_USE_FIB_NHG      0x40
 
+#define ROUTE_ENTRY_REEVALUATE       0x80
+
 	/* Sequence value incremented for each dataplane operation */
 	uint32_t dplane_sequence;
 
@@ -338,6 +340,9 @@ int route_entry_update_nhe(struct route_entry *re,
 /* NHG replace has happend, we have to update route_entry pointers to new one */
 void rib_handle_nhg_replace(struct nhg_hash_entry *old_entry,
 			    struct nhg_hash_entry *new_entry);
+
+/* NHG got lost, reinstall failed routes */
+void rib_handle_nhg_reinstall(struct nhg_hash_entry *entry);
 
 #define route_entry_dump(prefix, src, re) _route_entry_dump(__func__, prefix, src, re)
 extern void _route_entry_dump(const char *func, union prefixconstptr pp,

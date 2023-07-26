@@ -453,6 +453,7 @@ struct zapi_nexthop {
 #define ZAPI_NEXTHOP_FLAG_SEG6		0x10
 #define ZAPI_NEXTHOP_FLAG_SEG6LOCAL	0x20
 #define ZAPI_NEXTHOP_FLAG_EVPN		0x40
+#define ZAPI_NEXTHOP_REEVALUATE     0x80
 
 /*
  * ZAPI Nexthop Group. For use with protocol creation of nexthop groups.
@@ -537,6 +538,9 @@ struct zapi_route {
  * offload situation.
  */
 #define ZEBRA_FLAG_OFFLOAD_FAILED     0x200
+
+
+#define ZEBRA_FLAG_BGP_PEER_CHANGED   0x400
 
 	/* The older XXX_MESSAGE flags live here */
 	uint32_t message;

@@ -424,6 +424,38 @@ void rib_handle_nhg_replace(struct nhg_hash_entry *old_entry,
 	}
 }
 
+
+void rib_handle_nhg_reinstall(struct nhg_hash_entry *nhe)
+{
+	struct zebra_router_table *zrt;
+	struct route_node *rn;
+	struct route_entry *re, *next;
+
+	if (IS_ZEBRA_DEBUG_RIB_DETAILED || IS_ZEBRA_DEBUG_NHG_DETAIL)
+		zlog_debug("%s: reinstalling routes nhe (%u) %p",
+			   __func__, nhe->id, nhe);
+
+	/* We have to do them ALL */
+	RB_FOREACH (zrt, zebra_router_table_head, &zrouter.tables) {
+		for (rn = route_top(zrt->table); rn;
+		     rn = srcdest_route_next(rn)) {
+			RNODE_FOREACH_RE_SAFE (rn, re, next) {
+				if ((re->nhe && re->nhe == nhe) ||
+				    (re->nhe_installed_id && re->nhe_installed_id == nhe->id)) {
+
+					if (CHECK_FLAG(re->status, ROUTE_ENTRY_FAILED)) {
+						if (IS_ZEBRA_DEBUG_NHG_DETAIL)
+							zlog_debug("%s: reinstalling route for nhe (%u) %pRN",
+								   __func__, nhe->id, rn);
+
+						rib_install_kernel(rn, re, NULL);
+					}
+				}
+			}
+		}
+	}
+}
+
 struct route_entry *rib_match(afi_t afi, safi_t safi, vrf_id_t vrf_id,
 			      const union g_addr *addr,
 			      struct route_node **rn_out)
@@ -2642,6 +2674,8 @@ static void process_subq_early_route_add(struct zebra_early_route *ere)
 			return;
 		}
 	} else {
+		struct nexthop *tmp_nh;
+
 		/* Lookup nhe from route information */
 		nhe = zebra_nhg_rib_find_nhe(ere->re_nhe, ere->afi);
 		if (!nhe) {
@@ -2658,6 +2692,22 @@ static void process_subq_early_route_add(struct zebra_early_route *ere)
 
 			early_route_memory_free(ere);
 			return;
+		}
+		for (ALL_NEXTHOPS(nhe->nhg, tmp_nh)) {
+			if (CHECK_FLAG(tmp_nh->flags, NEXTHOP_FLAG_EVPN)) {
+				struct ipaddr vtep_ip = {};
+
+				if (ere->afi == AFI_IP) {
+					vtep_ip.ipa_type = IPADDR_V4;
+					vtep_ip.ipaddr_v4 = tmp_nh->gate.ipv4;
+				} else {
+					vtep_ip.ipa_type = IPADDR_V6;
+					vtep_ip.ipaddr_v6 = tmp_nh->gate.ipv6;
+				}
+				zebra_rib_queue_evpn_route_add(
+					re->vrf_id, &tmp_nh->rmac, &vtep_ip,
+					&ere->p);
+			}
 		}
 	}
 

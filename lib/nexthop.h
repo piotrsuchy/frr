@@ -96,6 +96,7 @@ struct nexthop {
 #define NEXTHOP_FLAG_SRTE       (1 << 7) /* SR-TE color used for BGP traffic */
 #define NEXTHOP_FLAG_EVPN       (1 << 8) /* nexthop is EVPN */
 #define NEXTHOP_FLAG_LINKDOWN   (1 << 9) /* is not removed on link down */
+#define NEXTHOP_FLAG_PEER_HAS_CHANGED (1 << 10)
 
 #define NEXTHOP_IS_ACTIVE(flags)                                               \
 	(CHECK_FLAG(flags, NEXTHOP_FLAG_ACTIVE)                                \
@@ -139,6 +140,12 @@ struct nexthop {
 	union {
 		vni_t vni;
 	} nh_encap;
+
+	/* EVPN router's MAC.
+	 * Don't support multiple RMAC from the same VTEP yet, so it's not
+	 * included in hash key.
+	 */
+	struct ethaddr rmac;
 
 	/* SR-TE color used for matching SR-TE policies */
 	uint32_t srte_color;
@@ -248,6 +255,9 @@ extern struct nexthop *nexthop_dup(const struct nexthop *nexthop,
 /* Duplicates a nexthop and returns the newly allocated nexthop */
 extern struct nexthop *nexthop_dup_no_recurse(const struct nexthop *nexthop,
 					      struct nexthop *rparent);
+
+/* Check nexthop of IFINDEX type */
+extern bool nexthop_is_ifindex_type(const struct nexthop *nh);
 
 /*
  * Parse one or more backup index values, as comma-separated numbers,

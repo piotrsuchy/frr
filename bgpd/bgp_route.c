@@ -2885,7 +2885,8 @@ bool bgp_zebra_has_route_changed(struct bgp_path_info *selected)
 	 */
 	if (CHECK_FLAG(selected->flags, BGP_PATH_IGP_CHANGED)
 	    || CHECK_FLAG(selected->flags, BGP_PATH_MULTIPATH_CHG)
-	    || CHECK_FLAG(selected->flags, BGP_PATH_LINK_BW_CHG))
+	    || CHECK_FLAG(selected->flags, BGP_PATH_LINK_BW_CHG)
+		|| CHECK_FLAG(selected->flags, BGP_PATH_FORCED_RECURSIVE_PATH_CHANGE))
 		return true;
 
 	/*
@@ -3112,11 +3113,34 @@ static void bgp_process_main_one(struct bgp *bgp, struct bgp_dest *dest,
 	    && !CHECK_FLAG(dest->flags, BGP_NODE_USER_CLEAR)
 	    && !CHECK_FLAG(old_select->flags, BGP_PATH_ATTR_CHANGED)
 	    && !bgp_addpath_is_addpath_used(&bgp->tx_addpath, afi, safi)) {
-		if (bgp_zebra_has_route_changed(old_select)) {
+		if (bgp_zebra_has_route_changed(old_select) || CHECK_FLAG(dest->flags, BGP_NODE_USED_AS_RECURSIVE_NEXTHOP)) {
 #ifdef ENABLE_BGP_VNC
 			vnc_import_bgp_add_route(bgp, p, old_select);
 			vnc_import_bgp_exterior_add_route(bgp, p, old_select);
 #endif
+			if (CHECK_FLAG(dest->flags, BGP_NODE_USED_AS_RECURSIVE_NEXTHOP)) {
+				if (debug) {
+					zlog_debug("Route %pBD is used as recursive nexthop - will be updated", dest);
+				}
+			}
+
+			UNSET_FLAG(dest->flags, BGP_NODE_USED_AS_RECURSIVE_NEXTHOP);
+			if (CHECK_FLAG(old_select->flags, BGP_PATH_FORCED_RECURSIVE_PATH_CHANGE)) {
+				UNSET_FLAG(old_select->flags, BGP_PATH_FORCED_RECURSIVE_PATH_CHANGE);
+				if (bgp->rib) {
+				struct bgp_table *table = bgp->rib[afi][safi];
+					if (old_select->nexthop) {
+						struct bgp_dest* ddest = bgp_node_get(table, &old_select->nexthop->prefix);
+						if (ddest) {
+							if (debug) {
+								zlog_debug("Route %pBD set to be updated, setting nexthop %pBD to be updated", dest, ddest);
+							}
+							SET_FLAG(ddest->flags, BGP_NODE_USED_AS_RECURSIVE_NEXTHOP);
+						}
+					}
+				}
+			}
+
 			if (bgp_fibupd_safi(safi)
 			    && !bgp_option_check(BGP_OPT_NO_FIB)) {
 

@@ -1,3 +1,9 @@
+frr (8.4.2-2-aka1~deb11u1) bullseye; urgency=medium
+
+  * Applied patches 12524, 13413, tdunn, mfilus
+
+ -- Milosz Filus <mfilus@akamai.com>  Wed, 26 Jul 2023 13:43:14 +0200
+
 frr (8.4.2-1) unstable; urgency=medium
 
   * new upstream release FRR 8.4.2

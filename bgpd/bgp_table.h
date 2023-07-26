@@ -113,6 +113,7 @@ struct bgp_node {
 #define BGP_NODE_FIB_INSTALLED          (1 << 6)
 #define BGP_NODE_LABEL_REQUESTED        (1 << 7)
 #define BGP_NODE_SOFT_RECONFIG (1 << 8)
+#define BGP_NODE_USED_AS_RECURSIVE_NEXTHOP (1 << 9)
 
 	struct bgp_addpath_node_data tx_addpath;
 

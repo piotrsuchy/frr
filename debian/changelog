@@ -1,3 +1,9 @@
+frr (8.4.2-3-aka1~deb11u1) bullseye; urgency=medium
+
+  * Applied patches: msaklak (Ignore routes from evpn if vrf is unknown)
+
+ -- Marcin Saklak <msaklak@akamai.com>  Thu, 03 Aug 2023 15:12:52 +0200
+
 frr (8.4.2-2-aka1~deb11u1) bullseye; urgency=medium
 
   * Applied patches 12524, 13413, tdunn, mfilus

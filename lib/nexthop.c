@@ -158,6 +158,11 @@ static int _nexthop_cmp_no_labels(const struct nexthop *next1,
 	if (next1->weight > next2->weight)
 		return 1;
 
+	ret = memcmp(next1->rmac.octet, next2->rmac.octet, ETH_ALEN);
+	if (0 != ret) {
+		return ret;
+	}
+
 	switch (next1->type) {
 	case NEXTHOP_TYPE_IPV4:
 	case NEXTHOP_TYPE_IPV6:
@@ -422,6 +427,14 @@ bool nexthop_same(const struct nexthop *nh1, const struct nexthop *nh2)
 
 	if (nexthop_cmp(nh1, nh2) != 0)
 		return false;
+
+	if (nh1->resolved && nh2->resolved
+		&& nh1->resolved != nh1
+		&& nh1->resolved != nh2
+		&& nh2->resolved != nh1
+		&& nh2->resolved != nh2) {
+		return nexthop_same(nh1->resolved, nh2->resolved);
+	}
 
 	return true;
 }

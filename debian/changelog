@@ -1,3 +1,9 @@
+frr (8.4.2-4-aka1~deb11u1) bullseye; urgency=medium
+
+  * Applied patch 14080 and fix for BGP11 issue
+
+ -- Milosz Filus <mfilus@akamai.com>  Fri, 06 Oct 2023 12:31:40 +0200
+
 frr (8.4.2-3-aka1~deb11u1) bullseye; urgency=medium
 
   * Applied patches: msaklak (Ignore routes from evpn if vrf is unknown)

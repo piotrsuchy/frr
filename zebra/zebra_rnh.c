@@ -698,7 +698,7 @@ static void zebra_rnh_eval_nexthop_entry(struct zebra_vrf *zvrf, afi_t afi,
 	zebra_rnh_store_in_routing_table(rnh);
 
 
-	if (nrn && prn && !force) {
+	if (0 == state_changed && nrn && prn && !force) {
 		force = prefix_same(&nrn->p, &prn->p);
 		if (force) {
 			if (IS_ZEBRA_DEBUG_NHT) {

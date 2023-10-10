@@ -1,3 +1,9 @@
+frr (8.4.2-5-aka1~deb11u1) bullseye; urgency=medium
+
+  * Applied patch: mdjernae, BGP12 issue fix
+
+ -- Milosz Filus <mfilus@akamai.com>  Tue, 10 Oct 2023 11:22:17 +0200
+
 frr (8.4.2-4-aka1~deb11u1) bullseye; urgency=medium
 
   * Applied patch 14080 and fix for BGP11 issue

@@ -79,6 +79,7 @@ RUN apt update && apt upgrade -y && \
     python3 -m pip install pytest-xdist && \
     python3 -m pip install "scapy>=2.4.2" && \
     python3 -m pip install xmltodict && \
+    python3 -m pip install --upgrade pip setuptools wheel && \
     python3 -m pip install grpcio grpcio-tools && \
     python3 -m pip install git+https://github.com/Exa-Networks/exabgp@0659057837cd6c6351579e9f0fa47e9fb7de7311
 

@@ -1,3 +1,9 @@
+frr (8.4.2-6-aka1~deb11u1) bullseye; urgency=low
+
+  * Applied patch: fix for CLIC-271
+
+ -- Piotr Suchy <psuchy@akamai.com>  Tue, 02 Apr 2024 15:33:15 +0200
+
 frr (8.4.2-5-aka1~deb11u1) bullseye; urgency=medium
 
   * Applied patch: mdjernae, BGP12 issue fix

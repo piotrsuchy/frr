@@ -1295,7 +1295,7 @@ static void do_show_route_helper(struct vty *vty, struct zebra_vrf *zvrf,
 	}
 
 	if (use_json && !vrf_json) {
-		vty_json(vty, json);
+		vty_json_no_pretty(vty, json);
 		json = NULL;
 	}
 }
@@ -1952,7 +1952,7 @@ DEFPY (show_route,
 				json_object_object_add(root_json, zvrf_name(zvrf), vrf_json);
 		}
 		if (!!json) {
-			vty_json(vty, root_json);
+			vty_json_no_pretty(vty, root_json);
 			root_json = NULL;
 		}
 	} else {

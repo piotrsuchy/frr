@@ -3487,8 +3487,8 @@ static void show_access_list_send(afi_t afi, const char *access_list,
 	else if (afi == AFI_IP6)
 		snprintf(command_line, sizeof(command_line),
 			 "do show ipv6 access-list ");
-	if (prefix_list)
-		strlcat(command_line, prefix_list, sizeof(command_line));
+	if (access_list)
+		strlcat(command_line, access_list, sizeof(command_line));
 	if (json)
 		strlcat(command_line, " json", sizeof(command_line));
 
@@ -3499,7 +3499,7 @@ static void show_access_list_send(afi_t afi, const char *access_list,
 		const struct vtysh_client *client = &vtysh_client[i];
 		bool is_connected = true;
 
-		if (!CHECK_FLAG(client->flag, VTYSH_PREFIX_LIST_SHOW))
+		if (!CHECK_FLAG(client->flag, VTYSH_ACCESS_LIST_SHOW))
 			continue;
 
 		for (; client; client = client->next)
@@ -3532,7 +3532,7 @@ DEFPY (show_ip_access_list,
        "List IP access lists\n"
        JSON_STR)
 {
-	show_access_list_send(NULL, AFI_IP, !!uj);
+	show_access_list_send(AFI_IP, NULL, !!uj);
 	return CMD_SUCCESS;
 }
 
@@ -3546,7 +3546,7 @@ DEFPY (show_ip_access_list_name,
        JSON_STR)
 {
 	int idx_acl = 3;
-	show_access_list_send(argv[idx_acl]->arg, AFI_IP, !!uj);
+	show_access_list_send(AFI_IP, argv[idx_acl]->arg, !!uj);
 	return CMD_SUCCESS;
 }
 
@@ -3558,7 +3558,7 @@ DEFPY (show_ipv6_access_list,
        "List IPv6 access lists\n"
        JSON_STR)
 {
-	show_access_list_send(NULL, AFI_IP6, !!uj);
+	show_access_list_send(AFI_IP6, NULL, !!uj);
 	return CMD_SUCCESS;
 }
 
@@ -3572,7 +3572,7 @@ DEFPY (show_ipv6_access_list_name,
        JSON_STR)
 {
 	int idx_word = 3;
-	show_access_list_send(argv[idx_word]->arg, AFI_IP6, !!uj);
+	show_access_list_send(AFI_IP6, argv[idx_word]->arg, !!uj);
 	return CMD_SUCCESS;
 }
 

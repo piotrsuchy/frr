@@ -697,9 +697,13 @@ static void bgp_process_nexthop_update(struct bgp_nexthop_cache *bnc,
 			if (CHECK_FLAG(bnc->change_flags, BGP_NEXTHOP_CHANGED))
 				continue;
 
-			for (oldnh = bnc->nexthop; oldnh; oldnh = oldnh->next)
-				if (nexthop_same(oldnh, nexthop))
+			for (oldnh = bnc->nexthop; oldnh; oldnh = oldnh->next) {
+				zlog_debug("PSuchy: bgp_process_nexthop_update");
+				if (nexthop_same(oldnh, nexthop)) {
+					zlog_debug("PSuchy: bgp_process_nexthop_update");
 					break;
+				}
+			}
 
 			if (!oldnh)
 				SET_FLAG(bnc->change_flags, BGP_NEXTHOP_CHANGED);

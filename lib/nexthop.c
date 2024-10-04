@@ -449,8 +449,7 @@ bool nexthop_same(const struct nexthop *nh1, const struct nexthop *nh2)
 
 	if (nh1->resolved && nh2->resolved && nh1->resolved != nh1 && nh1->resolved != nh2 &&
 	    nh2->resolved != nh1 && nh2->resolved != nh2) {
-		zlog_debug("PSuchy: nexthop_same comparing: nh1: %s nh2: %s",
-			   nexthop_type_to_str(nh1->type), nexthop_type_to_str(nh2->type));
+		zlog_debug("PSuchy: nexthop_same comparing: nh1 and nh2");
 		return nexthop_same(nh1->resolved, nh2->resolved);
 	}
 

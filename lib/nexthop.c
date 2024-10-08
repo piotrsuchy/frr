@@ -165,12 +165,10 @@ static int _nexthop_cmp_no_labels(const struct nexthop *next1,
 	}
 
 	ret = memcmp(next1->rmac.octet, next2->rmac.octet, ETH_ALEN);
-	zlog_debug("PSuchy: _nexthop_cmp_no_labels 1");
-
-	if (ret != 0) {
-		zlog_debug("PSuchy: _nexthop_cmp_no_labels ret != 0");
+	zlog_debug("PSuchy: _nexthop_cmp_no_labels: next1->rmac %pEA next2->rmac %pEA", next1->rmac,
+		   next2->rmac);
+	if (ret != 0)
 		return ret;
-	}
 
 	switch (next1->type) {
 	case NEXTHOP_TYPE_IPV4:

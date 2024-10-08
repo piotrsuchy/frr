@@ -444,11 +444,6 @@ bool nexthop_same(const struct nexthop *nh1, const struct nexthop *nh2)
 	if (nexthop_cmp(nh1, nh2) != 0)
 		return false;
 
-	if (nh1->resolved && nh2->resolved && nh1->resolved != nh1 && nh1->resolved != nh2 &&
-	    nh2->resolved != nh1 && nh2->resolved != nh2) {
-		return nexthop_same(nh1->resolved, nh2->resolved);
-	}
-
 	return true;
 }
 

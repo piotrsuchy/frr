@@ -9,7 +9,6 @@
 #include "memory.h"
 #include "command.h"
 #include "log.h"
-#include "zlog.h"
 #include "sockunion.h"
 #include "linklist.h"
 #include "prefix.h"
@@ -165,8 +164,6 @@ static int _nexthop_cmp_no_labels(const struct nexthop *next1,
 	}
 
 	ret = memcmp(next1->rmac.octet, next2->rmac.octet, ETH_ALEN);
-	zlog_debug("PSuchy: _nexthop_cmp_no_labels: next1->rmac %pEA next2->rmac %pEA", next1->rmac,
-		   next2->rmac);
 	if (ret != 0)
 		return ret;
 
@@ -449,15 +446,14 @@ bool nexthop_same(const struct nexthop *nh1, const struct nexthop *nh2)
 
 	if (nh1->resolved && nh2->resolved && nh1->resolved != nh1 && nh1->resolved != nh2 &&
 	    nh2->resolved != nh1 && nh2->resolved != nh2) {
-		zlog_debug("PSuchy: nexthop_same comparing: nh1: %s nh2: %s",
-			   nexthop_type_to_str(nh1->type), nexthop_type_to_str(nh2->type));
 		return nexthop_same(nh1->resolved, nh2->resolved);
 	}
 
 	return true;
 }
 
-bool nexthop_same_no_labels(const struct nexthop *nh1, const struct nexthop *nh2)
+bool nexthop_same_no_labels(const struct nexthop *nh1,
+			    const struct nexthop *nh2)
 {
 	if (nh1 && !nh2)
 		return false;

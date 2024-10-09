@@ -525,10 +525,11 @@ static bool nhg_compare_nexthops(const struct nexthop *nh1,
 	    != CHECK_FLAG(nh2->flags, NEXTHOP_FLAG_ACTIVE))
 		return false;
 
-	if (!nexthop_same(nh1, nh2))
-		return false;
-
-	return true;
+	if (nh1->resolved && nh2->resolved && nh1->resolved != nh1 && nh1->resolved != nh2 && nh2->resolved != nh1 && nh2->resolved != nh2) {
+		return nexthop_same(nh1->resolved, nh2->resolved);
+	} else {
+		return nexthop_same(nh1, nh2);
+	}
 }
 
 bool zebra_nhg_hash_equal(const void *arg1, const void *arg2)

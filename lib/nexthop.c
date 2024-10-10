@@ -163,10 +163,6 @@ static int _nexthop_cmp_no_labels(const struct nexthop *next1,
 			return 1;
 	}
 
-	ret = memcmp(next1->rmac.octet, next2->rmac.octet, ETH_ALEN);
-	if (ret != 0)
-		return ret;
-
 	switch (next1->type) {
 	case NEXTHOP_TYPE_IPV4:
 	case NEXTHOP_TYPE_IPV6:

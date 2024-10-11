@@ -1397,20 +1397,25 @@ static void zl3vni_remote_rmac_del(struct zebra_l3vni *zl3vni,
 		}
 
 		if (!listcount(zrmac->nh_list)) {
-			/* uninstall from kernel */
-			zl3vni_rmac_uninstall(zl3vni, zrmac);
+			/* if count != 1  */
+			if (hashcount(zl3vni->rmac_table) <= 1) {
+				/* uninstall from kernel */
+				zl3vni_rmac_uninstall(zl3vni, zrmac);
 
-			/* Send RMAC for FPM processing */
-			hook_call(zebra_rmac_update, zrmac, zl3vni, true,
-				  "RMAC deleted");
+				/* Send RMAC for FPM processing */
+				hook_call(zebra_rmac_update, zrmac, zl3vni, true,
+					"RMAC deleted");
 
-			if (IS_ZEBRA_DEBUG_VXLAN)
-				zlog_debug(
-					"L3VNI %u RMAC %pEA vtep_ip %pIA delete",
-					zl3vni->vni, &zrmac->macaddr, vtep_ip);
+				if (IS_ZEBRA_DEBUG_VXLAN)
+					zlog_debug(
+						"L3VNI %u RMAC %pEA vtep_ip %pIA delete",
+						zl3vni->vni, &zrmac->macaddr, vtep_ip);
 
-			/* del the rmac entry */
-			zl3vni_rmac_del(zl3vni, zrmac);
+				/* del the rmac entry */
+				zl3vni_rmac_del(zl3vni, zrmac);
+			} else {
+				zlog_debug("PSuchy: zl3vni->rmac_table > 1");
+			}
 		}
 	}
 }

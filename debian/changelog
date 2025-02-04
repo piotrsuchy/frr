@@ -1,3 +1,9 @@
+frr (8.4.2-7-aka1~deb11u1) bullseye; urgency=medium
+
+  * Applied patch: Fix for CRSKRK-149 directly and CRSKRK-33 indirectly.
+
+ -- Piotr Suchy <psuchy@akamai.com>  Tue, 04 Feb 2025 11:48:15 +0100
+
 frr (8.4.2-6-aka1~deb11u1) bullseye; urgency=low
 
   * Applied patch: fix for CLIC-271
